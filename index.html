@@ -4,47 +4,113 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Job Alert Form</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 500px; margin: auto; padding: 1em; }
-        label { display: block; margin-top: 1em; }
-        button { margin-top: 1em; padding: 0.5em 1em; font-size: 1em; }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/antd/4.16.13/antd.dark.min.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            background-color: #1f1f1f;
+            color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 500px;
+            margin: auto;
+        }
+        .ant-checkbox-wrapper, .ant-checkbox-group-item, .ant-select {
+            color: #f0f0f0;
+        }
+        h2 {
+            text-align: center;
+            color: #ffffff;
+        }
+        .form-section {
+            margin-bottom: 20px;
+        }
+        .submit-btn {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <h2>Configure Job Alert</h2>
-    <form id="job-alert-form">
-        <label>Experience Level:
-            <select name="experience" multiple>
-                <option value="1">Entry Level</option>
-                <option value="2">Intermediate</option>
-                <option value="3">Expert</option>
-            </select>
-        </label>
-        <label>Job Type:
-            <select name="job_type" multiple>
-                <option value="0">Hourly</option>
-                <option value="1">Fixed-Price</option>
-            </select>
-        </label>
-        <label>Hourly Rate (min-max): <input type="text" name="hourly_rate" placeholder="10-50"></label>
-        <label>Fixed Price (min-max): <input type="text" name="fixed_price" placeholder="100-500"></label>
-        <label>Client History:
-            <select name="client_history" multiple>
-                <option value="0">No Hires</option>
-                <option value="1-9">1-9 Hires</option>
-                <option value="10+">10+ Hires</option>
-            </select>
-        </label>
-        <label>Keywords: <input type="text" name="keywords" placeholder="e.g., developer, Python"></label>
-        <button type="button" onclick="submitForm()">Submit</button>
+
+    <form id="job-alert-form" class="form-section">
+        <div class="form-section">
+            <label>Experience Level:</label>
+            <div id="experience-level">
+                <label><input type="checkbox" value="1" /> Entry Level</label><br/>
+                <label><input type="checkbox" value="2" /> Intermediate</label><br/>
+                <label><input type="checkbox" value="3" /> Expert</label>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <label>Job Type:</label>
+            <div id="job-type">
+                <label><input type="checkbox" value="0" /> Hourly</label><br/>
+                <label><input type="checkbox" value="1" /> Fixed-Price</label>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <label>Hourly Rate (min-max):</label>
+            <input type="text" id="hourly-rate" placeholder="e.g., 10-50" class="ant-input" />
+        </div>
+
+        <div class="form-section">
+            <label>Fixed Price (min-max):</label>
+            <input type="text" id="fixed-price" placeholder="e.g., 100-500" class="ant-input" />
+        </div>
+
+        <div class="form-section">
+            <label>Client History:</label>
+            <div id="client-history">
+                <label><input type="checkbox" value="0" /> No Hires</label><br/>
+                <label><input type="checkbox" value="1-9" /> 1-9 Hires</label><br/>
+                <label><input type="checkbox" value="10+" /> 10+ Hires</label>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <label>Keywords:</label>
+            <input type="text" id="keywords" placeholder="e.g., developer, Python" class="ant-input" />
+        </div>
+
+        <div class="submit-btn">
+            <button type="button" class="ant-btn ant-btn-primary" onclick="submitForm()">Submit</button>
+        </div>
     </form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/antd/4.16.13/antd.min.js"></script>
     <script>
-        function submitForm() {
-            const formData = new FormData(document.getElementById("job-alert-form"));
-            const data = Object.fromEntries(formData.entries());
-            Telegram.WebApp.sendData(JSON.stringify(data));
+        function getSelectedValues(id) {
+            const checkboxes = document.querySelectorAll(`#${id} input[type="checkbox"]:checked`);
+            return Array.from(checkboxes).map(cb => cb.value);
         }
+
+        function submitForm() {
+            const experienceLevels = getSelectedValues("experience-level");
+            const jobTypes = getSelectedValues("job-type");
+            const clientHistory = getSelectedValues("client-history");
+            const hourlyRate = document.getElementById("hourly-rate").value;
+            const fixedPrice = document.getElementById("fixed-price").value;
+            const keywords = document.getElementById("keywords").value;
+
+            const formData = {
+                experienceLevels,
+                jobTypes,
+                clientHistory,
+                hourlyRate,
+                fixedPrice,
+                keywords
+            };
+
+            Telegram.WebApp.sendData(JSON.stringify(formData));
+        }
+
+        // Initialize the Telegram Web App with dark theme settings
+        Telegram.WebApp.expand();
     </script>
 </body>
 </html>
