@@ -15,7 +15,7 @@
             max-width: 500px;
             margin: auto;
         }
-        .ant-checkbox-wrapper, .ant-checkbox-group-item, .ant-select {
+        .ant-checkbox-wrapper, .ant-input, .ant-select {
             color: #f0f0f0;
         }
         h2 {
@@ -30,6 +30,10 @@
             justify-content: center;
             margin-top: 20px;
         }
+        .error {
+            color: #ff4d4f;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
@@ -38,7 +42,7 @@
     <form id="job-alert-form" class="form-section">
         <div class="form-section">
             <label>Experience Level:</label>
-            <div id="experience-level">
+            <div id="experience-level" class="ant-checkbox-group">
                 <label><input type="checkbox" value="1" /> Entry Level</label><br/>
                 <label><input type="checkbox" value="2" /> Intermediate</label><br/>
                 <label><input type="checkbox" value="3" /> Expert</label>
@@ -47,7 +51,7 @@
 
         <div class="form-section">
             <label>Job Type:</label>
-            <div id="job-type">
+            <div id="job-type" class="ant-checkbox-group">
                 <label><input type="checkbox" value="0" /> Hourly</label><br/>
                 <label><input type="checkbox" value="1" /> Fixed-Price</label>
             </div>
@@ -56,19 +60,39 @@
         <div class="form-section">
             <label>Hourly Rate (min-max):</label>
             <input type="text" id="hourly-rate" placeholder="e.g., 10-50" class="ant-input" />
+            <span id="hourly-rate-error" class="error"></span>
         </div>
 
         <div class="form-section">
             <label>Fixed Price (min-max):</label>
             <input type="text" id="fixed-price" placeholder="e.g., 100-500" class="ant-input" />
+            <span id="fixed-price-error" class="error"></span>
         </div>
 
         <div class="form-section">
             <label>Client History:</label>
-            <div id="client-history">
+            <div id="client-history" class="ant-checkbox-group">
                 <label><input type="checkbox" value="0" /> No Hires</label><br/>
                 <label><input type="checkbox" value="1-9" /> 1-9 Hires</label><br/>
                 <label><input type="checkbox" value="10+" /> 10+ Hires</label>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <label>Categories:</label>
+            <div id="category2_uid" class="ant-checkbox-group">
+                <label><input type="checkbox" value="531770282584862721" /> Accounting & Consulting</label><br/>
+                <label><input type="checkbox" value="531770282580668416" /> Admin Support</label><br/>
+                <label><input type="checkbox" value="531770282580668417" /> Customer Service</label><br/>
+                <label><input type="checkbox" value="531770282580668420" /> Data Science & Analytics</label><br/>
+                <label><input type="checkbox" value="531770282580668421" /> Design & Creative</label><br/>
+                <label><input type="checkbox" value="531770282584862722" /> Engineering & Architecture</label><br/>
+                <label><input type="checkbox" value="531770282580668419" /> IT & Networking</label><br/>
+                <label><input type="checkbox" value="531770282584862723" /> Legal</label><br/>
+                <label><input type="checkbox" value="531770282580668422" /> Sales & Marketing</label><br/>
+                <label><input type="checkbox" value="531770282584862720" /> Translation</label><br/>
+                <label><input type="checkbox" value="531770282580668418" /> Web, Mobile & Software Dev</label><br/>
+                <label><input type="checkbox" value="531770282580668423" /> Writing</label>
             </div>
         </div>
 
@@ -84,32 +108,54 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/antd/4.16.13/antd.min.js"></script>
     <script>
+        // Helper to get selected checkbox values
         function getSelectedValues(id) {
             const checkboxes = document.querySelectorAll(`#${id} input[type="checkbox"]:checked`);
             return Array.from(checkboxes).map(cb => cb.value);
         }
 
+        // Validate range inputs in "min-max" format
+        function validateRange(input, errorElementId) {
+            const pattern = /^\d+-\d+$/;
+            const errorElement = document.getElementById(errorElementId);
+            if (input && !pattern.test(input)) {
+                errorElement.innerText = "Invalid format. Use min-max, e.g., 10-50.";
+                return false;
+            }
+            errorElement.innerText = "";
+            return true;
+        }
+
+        // Form submission handler
         function submitForm() {
             const experienceLevels = getSelectedValues("experience-level");
             const jobTypes = getSelectedValues("job-type");
             const clientHistory = getSelectedValues("client-history");
+            const categories = getSelectedValues("category2_uid");
             const hourlyRate = document.getElementById("hourly-rate").value;
             const fixedPrice = document.getElementById("fixed-price").value;
             const keywords = document.getElementById("keywords").value;
 
-            const formData = {
-                experienceLevels,
-                jobTypes,
-                clientHistory,
-                hourlyRate,
-                fixedPrice,
-                keywords
-            };
+            const isHourlyRateValid = validateRange(hourlyRate, "hourly-rate-error");
+            const isFixedPriceValid = validateRange(fixedPrice, "fixed-price-error");
 
-            Telegram.WebApp.sendData(JSON.stringify(formData));
+            // Only proceed if all validations pass
+            if (isHourlyRateValid && isFixedPriceValid) {
+                const formData = {
+                    experienceLevels,
+                    jobTypes,
+                    clientHistory,
+                    categories,
+                    hourlyRate,
+                    fixedPrice,
+                    keywords
+                };
+                
+                Telegram.WebApp.sendData(JSON.stringify(formData));
+            }
         }
 
-        // Initialize the Telegram Web App with dark theme settings
+        // Initialize the Telegram Web App
         Telegram.WebApp.expand();
     </script>
 </body>
