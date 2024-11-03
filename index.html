@@ -1,4 +1,114 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/antd/4.16.13/antd.min.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Alert Form</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/antd/4.16.13/antd.dark.min.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            background-color: #1f1f1f;
+            color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 500px;
+            margin: auto;
+        }
+        .ant-checkbox-wrapper, .ant-input, .ant-select {
+            color: #f0f0f0;
+        }
+        h2 {
+            text-align: center;
+            color: #ffffff;
+        }
+        .form-section {
+            margin-bottom: 20px;
+        }
+        .submit-btn {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .error {
+            color: #ff4d4f;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Configure Job Alert</h2>
+
+    <form id="job-alert-form" class="form-section">
+        <div class="form-section">
+            <label>Experience Level:</label>
+            <div id="experience-level" class="ant-checkbox-group">
+                <label><input type="checkbox" value="1" /> Entry Level</label><br/>
+                <label><input type="checkbox" value="2" /> Intermediate</label><br/>
+                <label><input type="checkbox" value="3" /> Expert</label>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <label>Job Type:</label>
+            <div id="job-type" class="ant-checkbox-group">
+                <label><input type="checkbox" value="0" /> Hourly</label><br/>
+                <label><input type="checkbox" value="1" /> Fixed-Price</label>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <label>Hourly Rate (min-max):</label>
+            <input type="text" id="hourly-rate" placeholder="e.g., 10-50" class="ant-input" />
+            <span id="hourly-rate-error" class="error"></span>
+        </div>
+
+        <div class="form-section">
+            <label>Fixed Price (min-max):</label>
+            <input type="text" id="fixed-price" placeholder="e.g., 100-500" class="ant-input" />
+            <span id="fixed-price-error" class="error"></span>
+        </div>
+
+        <div class="form-section">
+            <label>Client History:</label>
+            <div id="client-history" class="ant-checkbox-group">
+                <label><input type="checkbox" value="0" /> No Hires</label><br/>
+                <label><input type="checkbox" value="1-9" /> 1-9 Hires</label><br/>
+                <label><input type="checkbox" value="10+" /> 10+ Hires</label>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <label>Categories:</label>
+            <div id="category2_uid" class="ant-checkbox-group">
+                <label><input type="checkbox" value="531770282584862721" /> Accounting & Consulting</label><br/>
+                <label><input type="checkbox" value="531770282580668416" /> Admin Support</label><br/>
+                <label><input type="checkbox" value="531770282580668417" /> Customer Service</label><br/>
+                <label><input type="checkbox" value="531770282580668420" /> Data Science & Analytics</label><br/>
+                <label><input type="checkbox" value="531770282580668421" /> Design & Creative</label><br/>
+                <label><input type="checkbox" value="531770282584862722" /> Engineering & Architecture</label><br/>
+                <label><input type="checkbox" value="531770282580668419" /> IT & Networking</label><br/>
+                <label><input type="checkbox" value="531770282584862723" /> Legal</label><br/>
+                <label><input type="checkbox" value="531770282580668422" /> Sales & Marketing</label><br/>
+                <label><input type="checkbox" value="531770282584862720" /> Translation</label><br/>
+                <label><input type="checkbox" value="531770282580668418" /> Web, Mobile & Software Dev</label><br/>
+                <label><input type="checkbox" value="531770282580668423" /> Writing</label>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <label>Keywords:</label>
+            <input type="text" id="keywords" placeholder="e.g., developer, Python" class="ant-input" />
+        </div>
+
+        <div class="submit-btn">
+            <button type="button" class="ant-btn ant-btn-primary" onclick="submitForm()">Submit</button>
+        </div>
+    </form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/antd/4.16.13/antd.min.js"></script>
+   
+
 <script>
     // Helper to get selected checkbox values
     function getSelectedValues(id) {
@@ -69,3 +179,7 @@
     Telegram.WebApp.ready();
     console.log("Telegram Web App initialized.");
 </script>
+</body>
+</html>
+
+
